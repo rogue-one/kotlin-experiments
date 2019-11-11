@@ -15,8 +15,8 @@ fun Person.greet(): String {
 object Main {
     @JvmStatic fun main(args: Array<String>): Unit {
         val myList = MyList<String>()
-        myList.setHead("stalin")
-        myList.setTail("zhukov")
+        myList.head = "stalin"
+        myList.tail = "zhukov"
         println(process(myList))
     }
 }

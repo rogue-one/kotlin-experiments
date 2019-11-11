@@ -5,6 +5,9 @@ package com.rogue1.test
  */
 data class Person(val firstName: String, val lastName: String, val age: Int)
 
+
+
+
 /**
  * in keyword in the type parameter means the type parameter is Contra-variant
  * out keyword in the type parameter means the type parameter is Co-variant.
@@ -13,23 +16,25 @@ data class Person(val firstName: String, val lastName: String, val age: Int)
  */
 class MyList<T>() {
 
-    var data1: T? = null
-    var data2: T? = null
-
-    fun setHead(a: T): Unit {
-        data1 = a
+/* ================================================================================================================== */
+    // this is a property defined with a user defined getter and setter. thi
+    var head: T? = null
+    get () {
+        println("fetching head value")
+        return field
     }
-
-    fun setTail(a: T): Unit {
-        data2 = a
+    set(value) { // the setter function could optionally have a different access modifier than the field
+        println("setting head value to $value")
+        field = value
     }
-
-    fun head(): T? {
-        return data1
-    }
-
-    fun tail(): T? {
-        return data2
+/* ================================================================================================================== */
+    var tail: T? = null
+    get() {
+        println("returning tail")
+        return field
+    } set(value) {
+        println("setting tail value to $value")
+        field = value
     }
 
     /**
@@ -39,8 +44,8 @@ class MyList<T>() {
     companion object {
         fun <T> create(a1: T, a2: T): MyList<T> {
             val list = MyList<T>()
-            list.setHead(a1)
-            list.setHead(a2)
+            list.head = a1
+            list.tail = a2
             return list
         }
     }
@@ -52,7 +57,16 @@ class MyList<T>() {
  * is only used in co-variance position.
  */
 fun <T> process(input: MyList<out T>): T? {
-    return input.head()
+    return input.head
+}
+
+
+/**
+ * internal access modifier makes sure this class/property is only visible within this JVM compilation unit.
+ * this means anything with a internal access modifier is visible only to the classes within the target jar files.
+ */
+internal class Test(val value: Int) {
+
 }
 
 
