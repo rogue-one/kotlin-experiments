@@ -57,3 +57,28 @@ class ChildClass2 : ParentPerson {
 
 }
 
+
+interface Airship {
+    fun drive() {
+        println("I am flying")
+    }
+}
+
+interface Watership {
+    fun drive() {
+        println("I am sailing")
+    }
+}
+
+
+class Vehicle: Airship, Watership {
+    /**
+     * just like in Java/Scala you can class super to de-reference your parent class implementation. And super is
+     * parameterized (like Scala) to enable to refer to a specific class or interface.
+     */
+    override fun drive() {
+        super<Airship>.drive()
+        super<Watership>.drive()
+    }
+}
+
