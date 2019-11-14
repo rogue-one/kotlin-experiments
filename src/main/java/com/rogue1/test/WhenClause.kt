@@ -1,6 +1,5 @@
 package com.rogue1.test
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
@@ -98,7 +97,7 @@ object WhenClause {
     }
 
 
-    fun multiLineStrings(person: Person): String {
+    fun multiLineStrings(person: DataClass): String {
         return """
             firstName: ${person.firstName}
             lastName: ${person.lastName}
