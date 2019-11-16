@@ -20,3 +20,4 @@ interface TestInterface {
     fun bar()
 
 }
+
