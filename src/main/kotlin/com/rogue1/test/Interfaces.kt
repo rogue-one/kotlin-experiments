@@ -19,5 +19,11 @@ interface TestInterface {
 
     fun bar()
 
+    /**
+     * interfaces cannot be sealed in kotlin. This is because kotlin interfaces are designed to inter-operate with
+     * Java and nothing prevents a Java code to extend a sealed interface.
+     */
+    /*sealed*/ interface Test { fun hello(): String }
+
 }
 

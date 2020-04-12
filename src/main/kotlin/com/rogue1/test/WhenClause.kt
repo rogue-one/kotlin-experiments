@@ -17,6 +17,18 @@ object WhenClause {
     }
 
     /**
+     * the when clause can take variable/value definition which can be used downstream
+     */
+    fun varDefinition(num: Int): String {
+        return when(val str = num.toString()) {
+            "1" -> "one"
+            "2" -> "two"
+            "3", "4" -> "more than two less than four"
+            else -> "greater than four"
+        }
+    }
+
+    /**
      *
      * @param input
      */
