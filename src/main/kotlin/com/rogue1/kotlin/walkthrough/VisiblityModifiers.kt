@@ -1,4 +1,4 @@
-package com.rogue1.test
+package com.rogue1.kotlin.walkthrough
 
 /**
  * private class Dummy1 is only visible within this file

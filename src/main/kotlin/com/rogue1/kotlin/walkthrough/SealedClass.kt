@@ -1,4 +1,4 @@
-package com.rogue1.test
+package com.rogue1.kotlin.walkthrough
 
 /**
  * sealed modifier is available just as in Scala.

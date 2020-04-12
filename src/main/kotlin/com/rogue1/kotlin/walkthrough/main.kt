@@ -1,4 +1,4 @@
-package com.rogue1.test
+package com.rogue1.kotlin.walkthrough
 
 /**
  * extension function for Person data class.

@@ -1,4 +1,4 @@
-package com.rogue1.test
+package com.rogue1.kotlin.walkthrough
 
 import java.io.BufferedReader
 import java.io.File

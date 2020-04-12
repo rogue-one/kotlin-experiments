@@ -1,4 +1,4 @@
-package com.rogue1.test
+package com.rogue1.kotlin.walkthrough
 
 /**
  * inline function in kotlin is quite different. It must only be used with higher order functions specifically functions

@@ -1,4 +1,4 @@
-package com.rogue1.test
+package com.rogue1.kotlin.walkthrough
 
 /**
  * inline classes must have only one property that is either a primitive type like Int, Double etc or a String.
