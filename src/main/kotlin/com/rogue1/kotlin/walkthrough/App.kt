@@ -3,13 +3,17 @@
  */
 package com.rogue1.kotlin.walkthrough
 
-class App {
-    val greeting: String
-        get() {
-            return "Hello world."
-        }
+import com.rogue1.kotlin.walkthrough.coroutines.CRScopes
+import com.rogue1.kotlin.walkthrough.coroutines.Coroutine
+
+object App {
+
+   @JvmStatic fun main(args: Array<String>) {
+       Coroutine.sequentialByDefault()
+    }
+
+
+
 }
 
-fun main(args: Array<String>) {
-    println(App().greeting)
-}
+

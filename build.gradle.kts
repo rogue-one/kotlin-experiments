@@ -19,7 +19,7 @@ repositories {
     jcenter()
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).all {
+tasks.withType(KotlinCompile::class.java).all {
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -35,11 +35,16 @@ dependencies {
 
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5")
+
 }
 
 
 application {
     // Define the main class for the application.
-    mainClassName = "com.rogue1.test.AppKt"
+    mainClassName = "com.rogue1.kotlin.walkthrough.App"
+
+    applicationDefaultJvmArgs = listOf("-Dkotlinx.coroutines.debug", "-ea")
 
 }
