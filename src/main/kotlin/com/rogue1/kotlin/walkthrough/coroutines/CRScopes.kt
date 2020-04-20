@@ -1,15 +1,14 @@
 package com.rogue1.kotlin.walkthrough.coroutines
 
 import kotlinx.coroutines.*
-import java.lang.RuntimeException
-import java.util.*
 import kotlin.system.measureTimeMillis
 
 
 /**
- * GlobalScope
+ * all Coroutines extend from CoroutineScope so there is a one to one mapping between CoroutineScopes and Coroutines.
+ * i.e. for each Coroutine you create with launch/async command a new CoroutineScope is created.
  */
-object CRScopes {
+object CRScopes : Helper {
 
 
     /**
@@ -18,122 +17,64 @@ object CRScopes {
      * or when the entire application is killed (whichever happens first)
      */
     fun globalCoroutines() {
-        GlobalScope.launch { delay(1000L) ;println("") }
+        GlobalScope.launch { delay(1000L);println("") }
     }
 
-    /**
-     * an outer scope will wait for all the inner jobs/scopes to complete.
-     * In the below example the job waits for 1000 ms and then launches a another Coroutine/CoroutineScope
-     * which again waits for 1000. So the job that makes the total outer-scope will run for a time greater than 2000.
-     */
-    fun scopeWaitForAllChildren() {
-        val scope = CoroutineScope(Dispatchers.Default)
-        val job = scope.launch {
-            delay(1000)
-            launch {
-                log("starting nested job 1")
-                delay(1000)
-                log("ending nested job 1")
-            }
-        }
-        val timeMs = measureTimeMillis {
-            runBlocking {
-                job.join()
-            }
-        }
-        assert(timeMs > 2000, {"the job ran only for $timeMs. expected > 3000"})
-    }
-
-    /**
-     * the launch function creates a job and return immediately. In this below example we create two jobs
-     * that delays for 1000Ms each. since two launches do things in parallel the overall scope execution
-     * should be just slightly above 1000Ms.
-     */
-    fun parallelCrLaunch() {
-        val scope = CoroutineScope(Dispatchers.Default)
-        val job = scope.launch {
-            launch {
-                delay(1000)
-            }
-            launch {
-                delay(1000)
-            }
-        }
-        val timeMs = measureTimeMillis {
-            runBlocking {
-                job.join()
-            }
-        }
-        assert(timeMs in 1001..1999, {"the outer scope must run longer than 1000 ms"})
-    }
 
     /**
      * The launch and async extensions functions in a scope creates a new CoroutineScope.
      * This new scope will be a child scope to the original scope. So there is a one-to-one relationship
      * between a Coroutine and a CoroutineScope.
      */
-    fun launchAsyncAreScopes() {
+    fun launchAsyncCreatesNewScopes() {
         runBlocking {
-            val job = launch(CoroutineName("inner")) {
-                delay(1000)
-                log("inner scope name ${coroutineContext[CoroutineName]}")
-            }
-            assert(coroutineContext[Job]!!.children.contains(job), {"child parent relationship is missing"})
-        }
-    }
-
-    /**
-     * any failures in the
-     */
-    @Suppress("UNREACHABLE_CODE")
-    fun failPropagation() {
-        val timeMs = measureTimeMillis {
-           val res = runBlocking {
-               val time = 500L
-                val job1 = launch { delay(Long.MAX_VALUE); -1 }
-                val job2 = launch { delay(time); throw RuntimeException("I am a failing coroutine") }
-                delay(time + 200)
-                assert(job1.isCancelled, {"job 1 should have been cancelled by now"})
-            }
-        }
-    }
-
-    fun parentShouldWaitForAllChild() {
-
-    }
-
-    /**
-     * A Coroutine Scope can initiate multiple coroutines that runs in the background.
-     * but it will wait
-     *
-     */
-    fun mustWaitForAllCRComplete() {
-        val scope = CoroutineScope(Dispatchers.Default)
-        scope.launch {
-            for (i in 1..2) {
-               val data =  async(Dispatchers.Default) {
-                    expensiveCall(1000)
+            scope.launch {
+                val outerScope: CoroutineScope = this
+                launch {
+                    assert(outerScope != this, { "the outer scope shouldn't match the inner scope" })
                 }
+            }.join()
+        }
+    }
+
+
+
+    /**
+     * a coroutine scope will wait for all its children coroutines to run complete.
+     * so if you have job or deferred value inside your coroutine you don't have to wait for it to complete by calling
+     * join or await functions respectively. the coroutine scope will end only when all the underlying coroutines complete.
+     */
+    fun scopeWillWaitForAllJobs() {
+        val scope = CoroutineScope(Dispatchers.Default)
+        var timeMs = timeCoroutines { scope.launch { launch { delay(300) } }.join() }
+        log("coroutine ran for $timeMs duration")
+        assert(timeMs > 300, { "the scope ran only for $timeMs duration. expected > 300" })
+        timeMs = timeCoroutines { scope.launch { async { delay(300) } }.join() }
+        assert(timeMs > 300, { "the scope ran only for $timeMs duration. expected > 300" })
+        timeMs = timeCoroutines { scope.launch { coroutineScope { launch { delay(300) } } }.join() }
+        assert(timeMs > 300, { "the scope ran only for $timeMs duration. expected > 300" })
+    }
+
+    /**
+     * a scope/CR hierarchy is only created when use launch/async to launch new CR. not just because a scope
+     * is used under another scope. in the below example
+     */
+    fun scopeCRHierarchy() {
+        val scope = CoroutineScope(Dispatchers.Default)
+        runBlocking {
+            val parentJob = coroutineContext[Job]!!
+            scope.launch {
+                delay(100)
+                val flag = parentJob.children.contains(coroutineContext[Job]!!)
+                assert(!flag, {"this scope shouldn't be chained to runBlocking scope"})
+            }.join()
+            launch {
+                delay(100)
+                val flag = parentJob.children.contains(coroutineContext[Job]!!)
+                assert(flag, {"this scope shouldn be chained to runBlocking scope"})
             }
         }
-        scope.ensureActive()
     }
 
-
-    fun customScopeEg() {
-        val scope = CoroutineScope(Dispatchers.Default)
-        scope.launch {
-
-        }
-    }
-
-    suspend fun expensiveCall(work: Long) {
-        delay(work)
-        log("my work is done")
-    }
-
-    private fun log(msg: String) {
-        println("time = ${Date()} thread = ${Thread.currentThread().name}, message = $msg")
-    }
 
 }

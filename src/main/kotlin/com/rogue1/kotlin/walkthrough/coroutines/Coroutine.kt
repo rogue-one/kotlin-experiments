@@ -1,23 +1,10 @@
 package com.rogue1.kotlin.walkthrough.coroutines
 
-import com.rogue1.kotlin.walkthrough.Logger
 import kotlinx.coroutines.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.NonCancellable.isActive
-import kotlin.random.Random
 import kotlin.system.measureTimeMillis
 
-object Coroutine : Logger {
-
-    fun exceptionHandler() {
-        val scope = CoroutineScope(Dispatchers.Default)
-        val handler = CoroutineExceptionHandler { _, exception ->
-            println("Caught $exception")
-        }
-        scope.launch {
-
-        }
-    }
+object Coroutine : Helper {
 
     /**
      * a coroutine runs its suspended function in sequence.
@@ -26,7 +13,6 @@ object Coroutine : Logger {
      * But each suspended functions in the coroutine could still be run in a different thread.
      */
     fun sequentialByDefault() {
-        val scope = CoroutineScope(Dispatchers.Default)
         val job = scope.launch {
             delay(100)
             delay(100)
@@ -45,6 +31,25 @@ object Coroutine : Logger {
         } else {
             warn("all work was executed in a single thread")
         }
+    }
+
+    /**
+     * the launch function creates a job and return immediately. In this below example we create two jobs
+     * that delays for 1000Ms each. since the two launches do things in parallel the overall scope execution
+     * should be just slightly above 1000Ms.
+     */
+    fun parallelCrLaunch() {
+        val timeMs= timeCoroutines {
+            scope.launch {
+                launch {
+                    delay(1000)
+                }
+                launch {
+                    delay(1000)
+                }
+            }
+        }
+        assert(timeMs in 1001..1999, {"the outer scope must run longer than 1000 ms"})
     }
 
 

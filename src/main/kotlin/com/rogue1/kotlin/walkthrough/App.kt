@@ -4,12 +4,12 @@
 package com.rogue1.kotlin.walkthrough
 
 import com.rogue1.kotlin.walkthrough.coroutines.CRScopes
-import com.rogue1.kotlin.walkthrough.coroutines.Coroutine
+import com.rogue1.kotlin.walkthrough.coroutines.Exceptions
 
 object App {
 
    @JvmStatic fun main(args: Array<String>) {
-       Coroutine.sequentialByDefault()
+       Exceptions.childCoroutinesWithDisjointScope()
     }
 
 
