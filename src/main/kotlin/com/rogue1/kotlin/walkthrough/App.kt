@@ -3,17 +3,15 @@
  */
 package com.rogue1.kotlin.walkthrough
 
-import com.rogue1.kotlin.walkthrough.coroutines.CRScopes
-import com.rogue1.kotlin.walkthrough.coroutines.Exceptions
+import com.rogue1.kotlin.walkthrough.coroutines.CRCancellations
+import kotlinx.coroutines.*
 
 object App {
 
-   @JvmStatic fun main(args: Array<String>) {
-       Exceptions.childCoroutinesWithDisjointScope()
+    @JvmStatic
+    fun main(args: Array<String>) = runBlocking {
+        CRCancellations.makeCRCancellableOnLongComputation()
     }
-
-
-
 }
 
 

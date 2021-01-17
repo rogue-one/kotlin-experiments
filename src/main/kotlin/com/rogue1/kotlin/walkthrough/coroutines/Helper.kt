@@ -24,6 +24,7 @@ interface Helper {
         }
     }
 
+
     fun log(message: String): Unit {
         println("thread = ${Thread.currentThread().name}, time = ${timestamp()}, message = $message")
     }
@@ -37,4 +38,6 @@ interface Helper {
         val sdf = local.getOrSet { SimpleDateFormat("HH:mm:ss")  }
         return sdf.format(Date())
     }
+
+
 }
